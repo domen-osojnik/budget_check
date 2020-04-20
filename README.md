@@ -12,3 +12,5 @@ SPECIFIKACIJE
 Java
 Android
 
+Avtor: Domen Osojnik
+Fakulteta: FERI Maribor

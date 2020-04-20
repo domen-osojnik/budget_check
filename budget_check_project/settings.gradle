@@ -1,2 +1,3 @@
 rootProject.name='BudgetCheck'
 include ':app'
+include ':DataStructureLib'
