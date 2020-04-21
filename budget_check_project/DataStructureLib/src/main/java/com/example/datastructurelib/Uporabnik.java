@@ -1,5 +1,7 @@
 package com.example.datastructurelib;
 
+import java.util.List;
+
 public class Uporabnik {
     /**
      * Spremenljivke
@@ -11,7 +13,7 @@ public class Uporabnik {
     private String priimek;
     private String geslo;
     private String kraj;
-
+    private List<Racun> racuni;
     /**
      * Konstruktor
      * @param uporabnisko_ime
@@ -20,14 +22,16 @@ public class Uporabnik {
      * @param priimek
      * @param geslo
      * @param kraj
+     * @param racuni
      */
-    public Uporabnik(String uporabnisko_ime, String email, String ime, String priimek, String geslo, String kraj) {
+    public Uporabnik(String uporabnisko_ime, String email, String ime, String priimek, String geslo, String kraj, List<Racun> racuni) {
         this.uporabnisko_ime = uporabnisko_ime;
         this.email = email;
         this.ime = ime;
         this.priimek = priimek;
         this.geslo = geslo;
         this.kraj = kraj;
+        this.racuni = racuni;
     }
 
     /**
@@ -80,5 +84,23 @@ public class Uporabnik {
 
     public void setKraj(String kraj) {
         this.kraj = kraj;
+    }
+
+    public List<Racun> getRacuni() {
+        return racuni;
+    }
+
+    public void setRacuni(List<Racun> racuni) {
+        this.racuni = racuni;
+    }
+
+    @Override
+    public String toString() {
+        String info="";
+
+        return "Podatki uporabnika\n" +
+                "Ime in priimek: " + ime + ' ' + priimek
+                +"\nŠtevilo računov: " + racuni.size();
+
     }
 }
