@@ -19,6 +19,7 @@ public class MyApplicationClass extends Application {
     /**
      * Spremenljivke
      */
+    public boolean obstaja = false;
     public static final String TAG = MyApplicationClass.class.getName();
     public static final String MY_FILE_NAME = "DATA.json";
     static private Gson gson;
@@ -33,6 +34,7 @@ public class MyApplicationClass extends Application {
     public void onCreate() {
         super.onCreate();
         idAPP="";
+        if(init())obstaja=true;
     }
 
     public void setIdApp(String newId){
@@ -74,13 +76,15 @@ public class MyApplicationClass extends Application {
         return true;
     }
 
-    private void init() {
+    private boolean init() {
         if (!readFromFile()) {
             Log.d(
                     TAG,
                     "Uporabnik še nima ustvarjenega računa!"
             );
+            return false;
         }
+        return true;
     }
 
     public static Gson getGson() {
