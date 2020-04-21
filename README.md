@@ -1,11 +1,11 @@
 # budget_check
-An app for checking your transactions
+Aplikacija, ki omogoÄa spremljanje finanÄnega stanja.
 
 FUNKCIONALNOST
 
-Ob zagonu si lahko uporabnik doda razne raèune, kot so osebni, varèevalni itd. Prav tako tem raèunom doloèi trenutno stanje.
-Doda se tudi meseèni prihodek ter statièni odhodek (polonice in podobno).
-Sproti lahko uporabnik belei, kje je zapravil denar, kje ga je dobil, doda lokacijo ter spremlja meseèno stanje.
+Ob zagonu si lahko uporabnik doda razne raÄune, kot so osebni, varÄevalni itd. Prav tako tem raÄunom doloÄi trenutno stanje.
+Doda se tudi meseÄni prihodek ter statiÄni odhodek (poloÅ¾nice in podobno).
+Sproti lahko uporabnik beleÅ¾i, kje je zapravil denar, kje ga je dobil, doda lokacijo ter spremlja meseÄno stanje.
 
 SPECIFIKACIJE
 
