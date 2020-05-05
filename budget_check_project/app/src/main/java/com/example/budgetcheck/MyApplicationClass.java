@@ -92,4 +92,8 @@ public class MyApplicationClass extends Application {
             gson = new GsonBuilder().setPrettyPrinting().create();
         return gson;
     }
+
+    public static class TransactionEvent {
+
+    }
 }

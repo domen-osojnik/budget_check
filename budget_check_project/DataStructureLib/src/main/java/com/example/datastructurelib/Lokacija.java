@@ -6,7 +6,6 @@ public class Lokacija {
      */
 
     private String naziv;
-    private String postnaStevilka;
 
     /**
      * Konstruktor
@@ -15,7 +14,6 @@ public class Lokacija {
      */
     public Lokacija(String naziv, String postnaStevilka) {
         this.naziv = naziv;
-        this.postnaStevilka = postnaStevilka;
     }
 
     /**
@@ -30,11 +28,5 @@ public class Lokacija {
         this.naziv = naziv;
     }
 
-    public String getPostnaStevilka() {
-        return postnaStevilka;
-    }
 
-    public void setPostnaStevilka(String postnaStevilka) {
-        this.postnaStevilka = postnaStevilka;
-    }
 }

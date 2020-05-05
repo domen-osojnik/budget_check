@@ -1,5 +1,6 @@
 package com.example.datastructurelib;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.swing.plaf.synth.Region;
@@ -10,7 +11,7 @@ public class Transakcija {
      */
     private Lokacija lokacija;
     private Date datum;
-    private Float znesek;
+    private BigDecimal znesek;
     private Boolean zapravljeno; //Če zapravi je 1, drugače 0
 
     /**
@@ -20,7 +21,7 @@ public class Transakcija {
      * @param znesek
      * @param zapravljeno
      */
-    public Transakcija(Lokacija lokacija, Date datum, Float znesek, Boolean zapravljeno) {
+    public Transakcija(Lokacija lokacija, Date datum, BigDecimal znesek, Boolean zapravljeno) {
         this.lokacija = lokacija;
         this.datum = datum;
         this.znesek = znesek;
@@ -47,11 +48,11 @@ public class Transakcija {
         this.datum = datum;
     }
 
-    public Float getZnesek() {
+    public BigDecimal getZnesek() {
         return znesek;
     }
 
-    public void setZnesek(Float znesek) {
+    public void setZnesek(BigDecimal znesek) {
         this.znesek = znesek;
     }
 

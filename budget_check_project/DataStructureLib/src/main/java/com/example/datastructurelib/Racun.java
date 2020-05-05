@@ -1,5 +1,6 @@
 package com.example.datastructurelib;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Racun {
@@ -8,7 +9,7 @@ public class Racun {
      */
     private VrstaRacuna tipRacuna;
     private String stRacuna;
-    private float stanje;
+    private BigDecimal stanje;
     private List<Transakcija> promet;
 
     /**
@@ -18,7 +19,7 @@ public class Racun {
      * @param stanje
      * @param promet
      */
-    public Racun(VrstaRacuna tipRacuna, String stRacuna, float stanje, List<Transakcija> promet) {
+    public Racun(VrstaRacuna tipRacuna, String stRacuna, BigDecimal stanje, List<Transakcija> promet) {
         this.tipRacuna = tipRacuna;
         this.stRacuna = stRacuna;
         this.stanje = stanje;
@@ -45,11 +46,11 @@ public class Racun {
         this.stRacuna = stRacuna;
     }
 
-    public float getStanje() {
+    public BigDecimal getStanje() {
         return stanje;
     }
 
-    public void setStanje(float stanje) {
+    public void setStanje(BigDecimal stanje) {
         this.stanje = stanje;
     }
 
