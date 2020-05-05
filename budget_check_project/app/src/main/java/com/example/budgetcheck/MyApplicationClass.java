@@ -93,7 +93,4 @@ public class MyApplicationClass extends Application {
         return gson;
     }
 
-    public static class TransactionEvent {
-
-    }
 }
