@@ -12,9 +12,6 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
-
-
-
 public class MyApplicationClass extends Application {
     /**
      * Spremenljivke
@@ -25,7 +22,7 @@ public class MyApplicationClass extends Application {
     static private Gson gson;
     static private File file;
     private String idAPP;
-    private Uporabnik uporabnik;
+    public Uporabnik uporabnik;
 
     /**
      * Ob zagonu
@@ -49,8 +46,10 @@ public class MyApplicationClass extends Application {
      */
 
     public boolean checkAccount(Uporabnik uporabnik){
-        if(!init()){
+        if(!obstaja){
             this.uporabnik = uporabnik;
+            //this.saveToFile();
+            Log.d("Uporabnik:", this.uporabnik.toString());
             return false;
         }
         else{
@@ -73,7 +72,7 @@ public class MyApplicationClass extends Application {
 
     public void saveToFile() {
         try {
-            FileUtils.writeStringToFile(getFile(), getGson().toJson(uporabnik));
+            FileUtils.writeStringToFile(this.file, getGson().toJson(this.uporabnik));
         } catch (IOException e) {
             Log.d(TAG, "Can't save "+file.getPath());
         }
