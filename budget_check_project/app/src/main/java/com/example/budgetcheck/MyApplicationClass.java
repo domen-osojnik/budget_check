@@ -12,9 +12,6 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
-
-
-
 public class MyApplicationClass extends Application {
     /**
      * Spremenljivke
@@ -25,7 +22,7 @@ public class MyApplicationClass extends Application {
     static private Gson gson;
     static private File file;
     private String idAPP;
-    private Uporabnik uporabnik;
+    public Uporabnik uporabnik;
 
     /**
      * Ob zagonu
@@ -33,7 +30,6 @@ public class MyApplicationClass extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        idAPP="";
         if(init())obstaja=true;
     }
 
@@ -46,10 +42,26 @@ public class MyApplicationClass extends Application {
     }
 
     /**
+     * Login preverjanje
+     */
+
+    public boolean checkAccount(Uporabnik uporabnik){
+        if(!obstaja){
+            this.uporabnik = uporabnik;
+            //this.saveToFile();
+            Log.d("Uporabnik:", this.uporabnik.toString());
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    /**
      * GSON
      * @return
      */
-    private  File getFile() {
+    private File getFile() {
         if (file == null) {
             File filesDir = getFilesDir();
             file = new File(filesDir, MY_FILE_NAME);
@@ -60,7 +72,7 @@ public class MyApplicationClass extends Application {
 
     public void saveToFile() {
         try {
-            FileUtils.writeStringToFile(getFile(), getGson().toJson(uporabnik));
+            FileUtils.writeStringToFile(this.file, getGson().toJson(this.uporabnik));
         } catch (IOException e) {
             Log.d(TAG, "Can't save "+file.getPath());
         }
@@ -71,6 +83,7 @@ public class MyApplicationClass extends Application {
         try {
             uporabnik = getGson().fromJson(FileUtils.readFileToString(getFile()), Uporabnik.class);
         } catch (IOException e) {
+            Log.d("READ", "Problem in read function!");
             return false;
         }
         return true;
