@@ -27,11 +27,14 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
     // Set the dimensions of the sign-in button.
     SignInButton signInButton;
+    MyApplicationClass myAppClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        myAppClass = new MyApplicationClass();
 
         signInButton= findViewById(R.id.sign_in_button);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -74,10 +77,10 @@ public class LoginActivity extends AppCompatActivity {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
             MyApplicationClass myAppClass = new MyApplicationClass();
-            Log.d("Stanje računa:", "Status: " + myAppClass.checkAccount(prijavljenUporabnik));
+            //Log.d("Stanje računa:", "Status: " + myAppClass.checkAccount(prijavljenUporabnik));
             // Signed in successfully, show authenticated UI.
             //TODO: preveri ali ima uporabnik račune, če nima, pošlji na activity za ustvarjanje računa, drugače na main activity (main menu)
-            //startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -94,8 +97,7 @@ public class LoginActivity extends AppCompatActivity {
         if(account != null) {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
-            MyApplicationClass myAppClass = new MyApplicationClass();
-            Log.d("Stanje računa:", "Status: " + myAppClass.checkAccount(prijavljenUporabnik));
+            //Log.d("Stanje računa:", "Status: " + myAppClass.checkAccount(prijavljenUporabnik));
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
         super.onStart();

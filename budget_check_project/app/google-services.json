@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "287299608474",
+    "firebase_url": "https://budgetcheck-80de6.firebaseio.com",
+    "project_id": "budgetcheck-80de6",
+    "storage_bucket": "budgetcheck-80de6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287299608474:android:1ac3a6169ad0a7c0282423",
+        "android_client_info": {
+          "package_name": "com.example.budgetcheck"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "287299608474-pr7g6l4n2u983vtr7bud0o10mku5a0p2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.budgetcheck",
+            "certificate_hash": "6dcac6b86d2082c08eeeca4ad948e700f72b6239"
+          }
+        },
+        {
+          "client_id": "287299608474-n9in0dsg3lv45dhvvov09as50flttule.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9uJgEZ2OZ6RnfDJgGQUm8dtJGu44vee4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "287299608474-lnc5fa3keacqqoqmtq56raoolncvopu6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -44,11 +44,10 @@ public class MyApplicationClass extends Application {
     /**
      * Login preverjanje
      */
-
     public boolean checkAccount(Uporabnik uporabnik){
         if(!obstaja){
             this.uporabnik = uporabnik;
-            //this.saveToFile();
+            this.saveToFile();
             Log.d("Uporabnik:", this.uporabnik.toString());
             return false;
         }
@@ -64,7 +63,12 @@ public class MyApplicationClass extends Application {
     private File getFile() {
         if (file == null) {
             File filesDir = getFilesDir();
-            file = new File(filesDir, MY_FILE_NAME);
+            file = new File(filesDir,MY_FILE_NAME);
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         Log.i(TAG, file.getPath());
         return file;
@@ -72,7 +76,7 @@ public class MyApplicationClass extends Application {
 
     public void saveToFile() {
         try {
-            FileUtils.writeStringToFile(this.file, getGson().toJson(this.uporabnik));
+            FileUtils.writeStringToFile(this.getFile(), getGson().toJson(this.uporabnik));
         } catch (IOException e) {
             Log.d(TAG, "Can't save "+file.getPath());
         }
