@@ -135,19 +135,24 @@ public class MyApplicationClass extends Application {
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         final String TAG = "LOGIN_RESPONSE";
         Query query = reference.child("users").orderByChild("email").equalTo(uporabnik.getEmail());
+        final boolean[] toReturn = new boolean[1];
 
+        //PREVERJANJE
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Log.d(TAG, "Uporabnik najden.");
-                    Log.d("Data", dataSnapshot.toString());
+
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                        Log.d("Data", issue.toString());
+                        if(issue.child("racuni").exists()) {
+                            toReturn[0] = true;
+                        }
+                        else  toReturn[0] = false;
                     }
                 }
 
-                //INSERT USER TO DATABASE
+                //INSERT USER INTO DATABASE
                 else{
                     Log.d(TAG, "Ustvarjam uporabnika.");
                     reference.child("users").child(UUID.randomUUID().toString()).setValue(uporabnik);
@@ -160,7 +165,7 @@ public class MyApplicationClass extends Application {
             }
         });
 
-        return true;
+        return toReturn[0];
     }
     //region
 }
