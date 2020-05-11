@@ -3,12 +3,26 @@ package com.example.budgetcheck;
 import android.app.Application;
 import android.util.Log;
 
+import com.example.datastructurelib.Racun;
+import com.example.datastructurelib.Transakcija;
 import com.example.datastructurelib.Uporabnik;
+import com.example.datastructurelib.VrstaRacuna;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
@@ -16,6 +30,7 @@ public class MyApplicationClass extends Application {
     /**
      * Spremenljivke
      */
+    private DatabaseReference mDatabase;
     public boolean obstaja = false;
     public static final String TAG = MyApplicationClass.class.getName();
     public static final String MY_FILE_NAME = "DATA.json";
@@ -56,10 +71,12 @@ public class MyApplicationClass extends Application {
         }
     }
 
+    //region GSON
     /**
      * GSON
      * @return
      */
+
     private File getFile() {
         if (file == null) {
             File filesDir = getFilesDir();
@@ -109,5 +126,31 @@ public class MyApplicationClass extends Application {
             gson = new GsonBuilder().setPrettyPrinting().create();
         return gson;
     }
+    //endregion
 
+    //region FIREBASE
+    boolean handleLogin(){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        Query query = reference.child("users");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Log.d("Data", dataSnapshot.toString());
+                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                        Log.d("Data", issue.toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        return true;
+    }
+    //region
 }

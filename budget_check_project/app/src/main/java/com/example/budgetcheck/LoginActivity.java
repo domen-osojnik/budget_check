@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         myAppClass = new MyApplicationClass();
-
+        myAppClass.handleLogin();
         signInButton= findViewById(R.id.sign_in_button);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -98,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
             //Log.d("Stanje računa:", "Status: " + myAppClass.checkAccount(prijavljenUporabnik));
+
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
         super.onStart();
