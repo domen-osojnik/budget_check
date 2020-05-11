@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
@@ -129,18 +131,26 @@ public class MyApplicationClass extends Application {
     //endregion
 
     //region FIREBASE
-    boolean handleLogin(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+    boolean handleLogin(final Uporabnik uporabnik){
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        final String TAG = "LOGIN_RESPONSE";
+        Query query = reference.child("users").orderByChild("email").equalTo(uporabnik.getEmail());
 
-        Query query = reference.child("users");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    Log.d(TAG, "Uporabnik najden.");
                     Log.d("Data", dataSnapshot.toString());
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                         Log.d("Data", issue.toString());
                     }
+                }
+
+                //INSERT USER TO DATABASE
+                else{
+                    Log.d(TAG, "Ustvarjam uporabnika.");
+                    reference.child("users").child(UUID.randomUUID().toString()).setValue(uporabnik);
                 }
             }
 

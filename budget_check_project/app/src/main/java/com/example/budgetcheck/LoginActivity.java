@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         myAppClass = new MyApplicationClass();
-        myAppClass.handleLogin();
+
         signInButton= findViewById(R.id.sign_in_button);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -76,14 +76,10 @@ public class LoginActivity extends AppCompatActivity {
 
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
-            MyApplicationClass myAppClass = new MyApplicationClass();
-            //Log.d("Stanje računa:", "Status: " + myAppClass.checkAccount(prijavljenUporabnik));
-            // Signed in successfully, show authenticated UI.
+            myAppClass.handleLogin(prijavljenUporabnik);
             //TODO: preveri ali ima uporabnik račune, če nima, pošlji na activity za ustvarjanje računa, drugače na main activity (main menu)
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("Google Sign In Error", "signInResult:failed code=" + e.getStatusCode());
             Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_LONG).show();
         }
@@ -97,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         if(account != null) {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
-            //Log.d("Stanje računa:", "Status: " + myAppClass.checkAccount(prijavljenUporabnik));
+            myAppClass.handleLogin(prijavljenUporabnik);
 
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
