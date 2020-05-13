@@ -58,20 +58,6 @@ public class MyApplicationClass extends Application {
         return this.idAPP;
     }
 
-    /**
-     * Login preverjanje
-     */
-    public boolean checkAccount(Uporabnik uporabnik){
-        if(!obstaja){
-            this.uporabnik = uporabnik;
-            this.saveToFile();
-            Log.d("Uporabnik:", this.uporabnik.toString());
-            return false;
-        }
-        else{
-            return true;
-        }
-    }
 
     //region GSON
     /**
@@ -167,5 +153,5 @@ public class MyApplicationClass extends Application {
 
         return toReturn[0];
     }
-    //region
+    //endregion
 }
