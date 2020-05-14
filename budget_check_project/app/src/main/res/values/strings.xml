@@ -11,4 +11,5 @@
     <string name="app_name">BudgetCheck</string>
     <string name="home_title">Doma
     </string>
+    <string name="create_accountTitle">Ustvarjanje računa</string>
 </resources>

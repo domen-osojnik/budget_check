@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.budgetcheck.events.InfoEvent;
 import com.example.datastructurelib.Racun;
 import com.example.datastructurelib.Uporabnik;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -18,11 +19,16 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "LOGIN EVENT";
     int RC_SIGN_IN = 0;
     GoogleSignInClient mGoogleSignInClient;
     // Set the dimensions of the sign-in button.
@@ -76,9 +82,13 @@ public class LoginActivity extends AppCompatActivity {
 
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
-            myAppClass.handleLogin(prijavljenUporabnik);
             //TODO: preveri ali ima uporabnik račune, če nima, pošlji na activity za ustvarjanje računa, drugače na main activity (main menu)
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
+            if(!myAppClass.handleLogin(prijavljenUporabnik))
+                startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
+            else
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+
         } catch (ApiException e) {
             Log.w("Google Sign In Error", "signInResult:failed code=" + e.getStatusCode());
             Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_LONG).show();
@@ -89,14 +99,28 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
+        EventBus.getDefault().register(this);
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if(account != null) {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
-            myAppClass.handleLogin(prijavljenUporabnik);
 
+            if(!myAppClass.handleLogin(prijavljenUporabnik))
+            startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
+            else
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
         super.onStart();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onInfoEvent(InfoEvent event) {
+        Log.i(TAG, "onInfoEvent"+event.toString());
+    };
 }
