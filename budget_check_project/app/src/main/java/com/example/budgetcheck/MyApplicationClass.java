@@ -3,7 +3,9 @@ package com.example.budgetcheck;
 import android.app.Application;
 import android.util.Log;
 
+import com.example.budgetcheck.events.InfoEvent;
 import com.example.datastructurelib.Racun;
+import com.example.datastructurelib.SeznamVrstRacuna;
 import com.example.datastructurelib.Transakcija;
 import com.example.datastructurelib.Uporabnik;
 import com.example.datastructurelib.VrstaRacuna;
@@ -27,11 +29,13 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
+import org.greenrobot.eventbus.EventBus;
 
 public class MyApplicationClass extends Application {
     /**
      * Spremenljivke
      */
+    public SeznamVrstRacuna seznamVrstRačunov;
     private DatabaseReference mDatabase;
     public boolean obstaja = false;
     public static final String TAG = MyApplicationClass.class.getName();
@@ -47,8 +51,15 @@ public class MyApplicationClass extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if(init())obstaja=true;
+
+        this.init();
     }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+    }
+
 
     public void setIdApp(String newId){
         this.idAPP = newId;
@@ -71,6 +82,7 @@ public class MyApplicationClass extends Application {
             file = new File(filesDir,MY_FILE_NAME);
             try {
                 file.createNewFile();
+                EventBus.getDefault().post(new InfoEvent("File get", "File created."));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -81,7 +93,8 @@ public class MyApplicationClass extends Application {
 
     public void saveToFile() {
         try {
-            FileUtils.writeStringToFile(this.getFile(), getGson().toJson(this.uporabnik));
+            FileUtils.writeStringToFile(this.getFile(), getGson().toJson(this.seznamVrstRačunov));
+            EventBus.getDefault().post(new InfoEvent("File write", "Written to file"));
         } catch (IOException e) {
             Log.d(TAG, "Can't save "+file.getPath());
         }
@@ -90,7 +103,7 @@ public class MyApplicationClass extends Application {
     private boolean readFromFile() {
         if (!getFile().exists())  return false;
         try {
-            uporabnik = getGson().fromJson(FileUtils.readFileToString(getFile()), Uporabnik.class);
+            seznamVrstRačunov = getGson().fromJson(FileUtils.readFileToString(getFile()), SeznamVrstRacuna.class);
         } catch (IOException e) {
             Log.d("READ", "Problem in read function!");
             return false;
@@ -98,13 +111,13 @@ public class MyApplicationClass extends Application {
         return true;
     }
 
-    private boolean init() {
+    public boolean init() {
         if (!readFromFile()) {
-            Log.d(
-                    TAG,
-                    "Uporabnik še nima ustvarjenega računa!"
-            );
             return false;
+        }
+        if(seznamVrstRačunov == null){
+            createAccountTypes();
+            saveToFile();
         }
         return true;
     }
@@ -122,6 +135,7 @@ public class MyApplicationClass extends Application {
         final String TAG = "LOGIN_RESPONSE";
         Query query = reference.child("users").orderByChild("email").equalTo(uporabnik.getEmail());
         final boolean[] toReturn = new boolean[1];
+        this.uporabnik = uporabnik;
 
         //PREVERJANJE
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -132,9 +146,14 @@ public class MyApplicationClass extends Application {
 
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                         if(issue.child("racuni").exists()) {
+                            EventBus.getDefault().post(new InfoEvent("User account status: ", "Has accounts"));
                             toReturn[0] = true;
                         }
-                        else  toReturn[0] = false;
+                        else
+                        {
+
+                            toReturn[0] = false;
+                        }
                     }
                 }
 
@@ -150,8 +169,18 @@ public class MyApplicationClass extends Application {
 
             }
         });
-
+        if (!toReturn[0])EventBus.getDefault().post(new InfoEvent("User account status:", "Doesn't have accounts"));
         return toReturn[0];
+    }
+    //endregion
+
+    //region WRITE TO FILE
+    private void createAccountTypes(){
+        seznamVrstRačunov = new SeznamVrstRacuna();
+        VrstaRacuna novaVrsta = new VrstaRacuna("Osebni");
+        seznamVrstRačunov.dodajRacun(novaVrsta);
+        novaVrsta = new VrstaRacuna("Varčevalni");
+        seznamVrstRačunov.dodajRacun(novaVrsta);
     }
     //endregion
 }
