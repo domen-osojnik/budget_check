@@ -17,15 +17,6 @@
         android:textSize="@dimen/account_creation_size"
         tools:ignore="MissingConstraints" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="40dp"
-        android:layout_height="31dp"
-        app:srcCompat="@drawable/ic_info_solid"
-        app:layout_constraintTop_toBottomOf="@id/guideline"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="20px"
-        />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -34,6 +25,30 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="75dp"
         />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dropdown_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        android:hint="Vrsta računa"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/dropdown_menu"
+        app:prefixText="SI56"
+        android:hint="Št. računa"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
