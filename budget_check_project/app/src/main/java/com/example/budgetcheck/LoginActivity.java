@@ -104,7 +104,6 @@ public class LoginActivity extends AppCompatActivity {
         if(account != null) {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
-
             if(!myAppClass.handleLogin(prijavljenUporabnik))
             startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
             else

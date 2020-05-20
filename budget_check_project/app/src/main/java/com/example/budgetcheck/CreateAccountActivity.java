@@ -1,12 +1,16 @@
 package com.example.budgetcheck;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.example.budgetcheck.events.InfoEvent;
@@ -19,17 +23,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CreateAccountActivity extends AppCompatActivity {
     public final static String TAG = "EVENT INFO";
     private MyApplicationClass mApplication;
-    List<VrstaRacuna> seznamRacunov;
+    ArrayList<String>dropdownVrednosti;
 
     Button addButton;
     TextInputEditText accountNumber;
     TextInputEditText balance;
-    String dB;
+    TextInputLayout accountType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,19 @@ public class CreateAccountActivity extends AppCompatActivity {
         this.addButton=(Button) findViewById(R.id.add_button);
         this.accountNumber = (TextInputEditText)findViewById(R.id.acc_number_text);
         this.balance = (TextInputEditText)findViewById(R.id.balance);
+        this.dropdownVrednosti=new ArrayList<>();
+
+        Spinner spin = (Spinner) findViewById(R.id.dropdown_menu);
+
+        for (int i = 0; i<mApplication.seznamVrstRačunov.getSeznamRacunov().size(); i++){
+            dropdownVrednosti.add(mApplication.seznamVrstRačunov.getSeznamRacunov().get(i).getNaziv());
+        }
+
+        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,this.dropdownVrednosti);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        spin.setAdapter(aa);
+
         this.addButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,7 +75,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-}
+    }
 
     @Override
     protected void onDestroy() {
