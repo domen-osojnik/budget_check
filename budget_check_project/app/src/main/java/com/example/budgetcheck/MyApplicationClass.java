@@ -44,6 +44,7 @@ public class MyApplicationClass extends Application {
     static private File file;
     private String idAPP;
     public Uporabnik uporabnik;
+    String userId;
 
     /**
      * Ob zagonu
@@ -133,25 +134,29 @@ public class MyApplicationClass extends Application {
     boolean handleLogin(final Uporabnik uporabnik){
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         final String TAG = "LOGIN_RESPONSE";
-        Query query = reference.child("users").orderByChild("email").equalTo(uporabnik.getEmail());
         final boolean[] toReturn = new boolean[1];
+        final String[] userIdArr = new String[1];
         this.uporabnik = uporabnik;
+
+        Query query = reference.child("users").orderByChild("email").equalTo(uporabnik.getEmail());
 
         //PREVERJANJE
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    Log.d(TAG, "Uporabnik najden.");
-
+                    EventBus.getDefault().post(new InfoEvent("User account status: ", "User exists"));
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                        if(issue.child("racuni").exists()) {
+                        userId = issue.getKey();
+                        Log.d("TEST", userIdArr[0]);
+                        if(issue.hasChild("accounts")) {
                             EventBus.getDefault().post(new InfoEvent("User account status: ", "Has accounts"));
                             toReturn[0] = true;
                         }
+
                         else
                         {
-
+                            EventBus.getDefault().post(new InfoEvent("User account status:", "Doesn't have accounts"));
                             toReturn[0] = false;
                         }
                     }
@@ -159,7 +164,7 @@ public class MyApplicationClass extends Application {
 
                 //INSERT USER INTO DATABASE
                 else{
-                    Log.d(TAG, "Ustvarjam uporabnika.");
+                    EventBus.getDefault().post(new InfoEvent("User account status: ", "Creating user"));
                     reference.child("users").child(UUID.randomUUID().toString()).setValue(uporabnik);
                 }
             }
@@ -169,8 +174,23 @@ public class MyApplicationClass extends Application {
 
             }
         });
-        if (!toReturn[0])EventBus.getDefault().post(new InfoEvent("User account status:", "Doesn't have accounts"));
+
+        Log.d("TESt", this.userId);
         return toReturn[0];
+    }
+
+    boolean HandleAccountCreation(String accNumber, String balance, String accType, String uId){
+        final String TAG = "ACCOUNT_RESPONSE";
+        Racun novRacun = new Racun(new VrstaRacuna(accType), accNumber, new BigDecimal(balance), new ArrayList<Transakcija>());
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        reference.child("Users").child(uId).child("accounts").child(UUID.randomUUID().toString()).setValue(novRacun);
+
+        return true;
+    }
+
+    String getUserID(){
+        return this.userId;
     }
     //endregion
 

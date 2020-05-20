@@ -34,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     // Set the dimensions of the sign-in button.
     SignInButton signInButton;
     MyApplicationClass myAppClass;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +82,21 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("Status", "Uspešno");
 
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
-                    account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
+                    account.getEmail(), account.getGivenName(), account.getFamilyName(), new ArrayList<Racun>());
             //TODO: preveri ali ima uporabnik račune, če nima, pošlji na activity za ustvarjanje računa, drugače na main activity (main menu)
 
-            if(!myAppClass.handleLogin(prijavljenUporabnik))
-                startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
+            if(!myAppClass.handleLogin(prijavljenUporabnik)){
+                intent = new Intent(this, CreateAccountActivity.class);
+            intent.putExtra("UID", myAppClass.getUserID());
+            startActivity(intent);
+            }
+
             else
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                {
+                intent = new Intent(this, MainActivity.class);
+                intent.putExtra("UID", myAppClass.getUserID());
+                startActivity(intent);
+            }
 
         } catch (ApiException e) {
             Log.w("Google Sign In Error", "signInResult:failed code=" + e.getStatusCode());
@@ -101,13 +110,20 @@ public class LoginActivity extends AppCompatActivity {
         // the GoogleSignInAccount will be non-null.
         EventBus.getDefault().register(this);
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
         if(account != null) {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
-                    account.getGivenName(), account.getFamilyName(), account.getEmail(), new ArrayList<Racun>());
-            if(!myAppClass.handleLogin(prijavljenUporabnik))
-            startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
-            else
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    account.getEmail(), account.getGivenName(), account.getFamilyName(),  new ArrayList<Racun>());
+
+            if (!myAppClass.handleLogin(prijavljenUporabnik)) {
+                intent = new Intent(this, CreateAccountActivity.class);
+                startActivity(intent);
+            }
+
+            else {
+                intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }
         }
         super.onStart();
     }
