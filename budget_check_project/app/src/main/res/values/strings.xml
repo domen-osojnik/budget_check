@@ -9,7 +9,14 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="app_name">BudgetCheck</string>
-    <string name="home_title">Doma
+    <string name="home_title">Pregled
     </string>
     <string name="create_accountTitle">Ustvarjanje računa</string>
+    <string name="create_transactionTitle">Ustvarjanje transakcije</string>
+    <string name="add_transaction">Dodaj transakcijo
+    </string>
+    <string name="settings">Nastavitve
+    </string>
+    <string name="channel_name">CHNAME</string>
+    <string name="channel_description">CHDSCRPT</string>
 </resources>

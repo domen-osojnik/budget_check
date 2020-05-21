@@ -87,14 +87,14 @@ public class LoginActivity extends AppCompatActivity {
 
             if(!myAppClass.handleLogin(prijavljenUporabnik)){
                 intent = new Intent(this, CreateAccountActivity.class);
-            intent.putExtra("UID", myAppClass.getUserID());
+            //intent.putExtra("UID", myAppClass.getUserID());
             startActivity(intent);
             }
 
             else
                 {
                 intent = new Intent(this, MainActivity.class);
-                intent.putExtra("UID", myAppClass.getUserID());
+                //intent.putExtra("UID", myAppClass.getUserID());
                 startActivity(intent);
             }
 

@@ -78,12 +78,12 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     void handleCreate(String accNumber, String balance, String accType){
         //TODO: Ustvari račun na bazi
-        if(this.mApplication.HandleAccountCreation(accNumber, balance, accType, this.UID)){
+        //if(this.mApplication.HandleAccountCreation(accNumber, balance, accType, this.UID)){
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("ACC", accNumber);
         startActivity(intent);
-       }
+       //}
 }
 
     @Override
@@ -103,6 +103,4 @@ public class CreateAccountActivity extends AppCompatActivity {
         Log.i(TAG, "onInfoEvent"+event.toString ());
     };
 
-    void getAccountTypes(){
-    }
 }

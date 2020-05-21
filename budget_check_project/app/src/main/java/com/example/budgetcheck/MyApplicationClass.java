@@ -70,13 +70,11 @@ public class MyApplicationClass extends Application {
         return this.idAPP;
     }
 
-
     //region GSON
     /**
      * GSON
      * @return
      */
-
     private File getFile() {
         if (file == null) {
             File filesDir = getFilesDir();
@@ -147,8 +145,7 @@ public class MyApplicationClass extends Application {
                 if (dataSnapshot.exists()) {
                     EventBus.getDefault().post(new InfoEvent("User account status: ", "User exists"));
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                        userId = issue.getKey();
-                        Log.d("TEST", userIdArr[0]);
+                        //userIdArr[0] = issue.getKey();
                         if(issue.hasChild("accounts")) {
                             EventBus.getDefault().post(new InfoEvent("User account status: ", "Has accounts"));
                             toReturn[0] = true;
@@ -174,8 +171,6 @@ public class MyApplicationClass extends Application {
 
             }
         });
-
-        Log.d("TESt", this.userId);
         return toReturn[0];
     }
 
