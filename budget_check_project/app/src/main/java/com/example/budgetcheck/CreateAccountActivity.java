@@ -50,6 +50,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         this.UID = intent.getStringExtra("UID");
+        Log.d("Pridobljen ID: " , this.UID);
 
         mApplication =(MyApplicationClass) getApplication();
         this.addButton=(Button) findViewById(R.id.add_button);

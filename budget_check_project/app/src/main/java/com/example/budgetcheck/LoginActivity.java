@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -74,28 +75,26 @@ public class LoginActivity extends AppCompatActivity {
             handleSignInResult(task);
         }
     }
-
+    //CE SE NI LOGINAN
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
             Log.d("Status", "Uspešno");
-
+            final String[] userId = {""};
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getEmail(), account.getGivenName(), account.getFamilyName(), new ArrayList<Racun>());
             //TODO: preveri ali ima uporabnik račune, če nima, pošlji na activity za ustvarjanje računa, drugače na main activity (main menu)
 
             if(!myAppClass.handleLogin(prijavljenUporabnik)){
                 intent = new Intent(this, CreateAccountActivity.class);
-            //intent.putExtra("UID", myAppClass.getUserID());
-            startActivity(intent);
+                runApp(intent);
             }
 
             else
                 {
                 intent = new Intent(this, MainActivity.class);
-                //intent.putExtra("UID", myAppClass.getUserID());
-                startActivity(intent);
+                    runApp(intent);
             }
 
         } catch (ApiException e) {
@@ -104,25 +103,26 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    //CE JE ZE LOGINAN
     @Override
     protected void onStart() {
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         EventBus.getDefault().register(this);
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
+        final String[] userId = {""};
         if(account != null) {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getEmail(), account.getGivenName(), account.getFamilyName(),  new ArrayList<Racun>());
 
             if (!myAppClass.handleLogin(prijavljenUporabnik)) {
                 intent = new Intent(this, CreateAccountActivity.class);
-                startActivity(intent);
+                runApp(intent);
             }
 
             else {
                 intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                runApp(intent);
             }
         }
         super.onStart();
@@ -138,4 +138,19 @@ public class LoginActivity extends AppCompatActivity {
     public void onInfoEvent(InfoEvent event) {
         Log.i(TAG, "onInfoEvent"+event.toString());
     };
+
+    //POČAKAJ DA SE TAM ID DOBI IN ZAŽENI INTENT
+    void runApp(final Intent intent){
+        final String TAG = "Fetching user id...";
+        final String[] userId = new String[1];
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                userId[0] = myAppClass.getUserID();
+                Log.d(TAG, userId[0]);
+                intent.putExtra("UID", userId[0]);
+                startActivity(intent);
+            }
+        }, 2000);
+    }
 }

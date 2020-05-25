@@ -44,7 +44,7 @@ public class MyApplicationClass extends Application {
     static private File file;
     private String idAPP;
     public Uporabnik uporabnik;
-    String userId;
+    public String userId;
 
     /**
      * Ob zagonu
@@ -145,7 +145,7 @@ public class MyApplicationClass extends Application {
                 if (dataSnapshot.exists()) {
                     EventBus.getDefault().post(new InfoEvent("User account status: ", "User exists"));
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                        //userIdArr[0] = issue.getKey();
+                        userId = issue.getKey();
                         if(issue.hasChild("accounts")) {
                             EventBus.getDefault().post(new InfoEvent("User account status: ", "Has accounts"));
                             toReturn[0] = true;
