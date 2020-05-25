@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.example.budgetcheck.events.InfoEvent;
+import com.example.datastructurelib.Lokacija;
 import com.example.datastructurelib.Racun;
 import com.example.datastructurelib.SeznamVrstRacuna;
 import com.example.datastructurelib.Transakcija;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -181,6 +183,16 @@ public class MyApplicationClass extends Application {
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         reference.child("users").child(uId).child("accounts").child(UUID.randomUUID().toString()).setValue(novRacun);
+        return true;
+    }
+
+    boolean HandleTranscationCreation(String location, Double amount, Boolean spent, String accId, String uId){
+        final String TAG = "TRANSACTION_CREATION";
+        Date newDate = new Date();
+        Transakcija newTransaction = new Transakcija(new Lokacija(location), newDate, amount, spent);
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        reference.child("users").child(uId).child("accounts").child(UUID.randomUUID().toString()).child("transactions").child(UUID.randomUUID().toString()).setValue(newTransaction);
         return true;
     }
 

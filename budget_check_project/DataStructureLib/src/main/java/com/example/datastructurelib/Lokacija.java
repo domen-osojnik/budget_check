@@ -10,9 +10,8 @@ public class Lokacija {
     /**
      * Konstruktor
      * @param naziv
-     * @param postnaStevilka
      */
-    public Lokacija(String naziv, String postnaStevilka) {
+    public Lokacija(String naziv) {
         this.naziv = naziv;
     }
 

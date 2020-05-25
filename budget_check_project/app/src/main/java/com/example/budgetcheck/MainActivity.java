@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     String value;
     TabLayout tabLayout;
     ViewPager viewPager;
+    MyApplicationClass myApplicationClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         tabLayout=(TabLayout)findViewById(R.id.tabs);
         viewPager=(ViewPager)findViewById(R.id.viewPager);
+        myApplicationClass = new MyApplicationClass();
 
         Intent intent = getIntent();
         this.value = intent.getStringExtra("ACC");
@@ -34,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
                 .show();
             else Snackbar.make(tabLayout, "Račun  "+ this.value +" ustvarjen!", Snackbar.LENGTH_LONG)
                 .show();
-
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
