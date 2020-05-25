@@ -1,9 +1,11 @@
 package com.example.budgetcheck;
 
 import android.app.Application;
+import android.os.Handler;
 import android.util.Log;
 
 import com.example.budgetcheck.events.InfoEvent;
+import com.example.datastructurelib.Lokacija;
 import com.example.datastructurelib.Racun;
 import com.example.datastructurelib.SeznamVrstRacuna;
 import com.example.datastructurelib.Transakcija;
@@ -24,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -44,7 +47,8 @@ public class MyApplicationClass extends Application {
     static private File file;
     private String idAPP;
     public Uporabnik uporabnik;
-    String userId;
+    public String userId;
+    boolean hasAcc;
 
     /**
      * Ob zagonu
@@ -129,7 +133,7 @@ public class MyApplicationClass extends Application {
     //endregion
 
     //region FIREBASE
-    boolean handleLogin(final Uporabnik uporabnik){
+    void handleLogin(final Uporabnik uporabnik){
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         final String TAG = "LOGIN_RESPONSE";
         final boolean[] toReturn = new boolean[1];
@@ -145,16 +149,16 @@ public class MyApplicationClass extends Application {
                 if (dataSnapshot.exists()) {
                     EventBus.getDefault().post(new InfoEvent("User account status: ", "User exists"));
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                        //userIdArr[0] = issue.getKey();
+                        userId = issue.getKey();
                         if(issue.hasChild("accounts")) {
                             EventBus.getDefault().post(new InfoEvent("User account status: ", "Has accounts"));
-                            toReturn[0] = true;
+                            hasAcc = true;
                         }
 
                         else
                         {
                             EventBus.getDefault().post(new InfoEvent("User account status:", "Doesn't have accounts"));
-                            toReturn[0] = false;
+                            hasAcc = false;
                         }
                     }
                 }
@@ -163,24 +167,32 @@ public class MyApplicationClass extends Application {
                 else{
                     EventBus.getDefault().post(new InfoEvent("User account status: ", "Creating user"));
                     reference.child("users").child(UUID.randomUUID().toString()).setValue(uporabnik);
+                    hasAcc = false;
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-        return toReturn[0];
     }
 
     boolean HandleAccountCreation(String accNumber, String balance, String accType, String uId){
         final String TAG = "ACCOUNT_RESPONSE";
-        Racun novRacun = new Racun(new VrstaRacuna(accType), accNumber, new BigDecimal(balance), new ArrayList<Transakcija>());
+        Racun novRacun = new Racun(new VrstaRacuna(accType), accNumber, new Double(balance), new ArrayList<Transakcija>());
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-        reference.child("Users").child(uId).child("accounts").child(UUID.randomUUID().toString()).setValue(novRacun);
+        reference.child("users").child(uId).child("accounts").child(UUID.randomUUID().toString()).setValue(novRacun);
+        return true;
+    }
 
+    boolean HandleTranscationCreation(String location, Double amount, Boolean spent, String accId, String uId){
+        final String TAG = "TRANSACTION_CREATION";
+        Date newDate = new Date();
+        Transakcija newTransaction = new Transakcija(new Lokacija(location), newDate, amount, spent);
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        reference.child("users").child(uId).child("accounts").child(UUID.randomUUID().toString()).child("transactions").child(UUID.randomUUID().toString()).setValue(newTransaction);
         return true;
     }
 
