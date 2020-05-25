@@ -85,17 +85,8 @@ public class LoginActivity extends AppCompatActivity {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getEmail(), account.getGivenName(), account.getFamilyName(), new ArrayList<Racun>());
             //TODO: preveri ali ima uporabnik račune, če nima, pošlji na activity za ustvarjanje računa, drugače na main activity (main menu)
-
-            if(!myAppClass.handleLogin(prijavljenUporabnik)){
-                intent = new Intent(this, CreateAccountActivity.class);
-                runApp(intent);
-            }
-
-            else
-                {
-                intent = new Intent(this, MainActivity.class);
-                    runApp(intent);
-            }
+            //ZAŽENI
+            runApp();
 
         } catch (ApiException e) {
             Log.w("Google Sign In Error", "signInResult:failed code=" + e.getStatusCode());
@@ -114,16 +105,9 @@ public class LoginActivity extends AppCompatActivity {
         if(account != null) {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getEmail(), account.getGivenName(), account.getFamilyName(),  new ArrayList<Racun>());
-
-            if (!myAppClass.handleLogin(prijavljenUporabnik)) {
-                intent = new Intent(this, CreateAccountActivity.class);
-                runApp(intent);
-            }
-
-            else {
-                intent = new Intent(this, MainActivity.class);
-                runApp(intent);
-            }
+            myAppClass.handleLogin(prijavljenUporabnik);
+            //ZAŽENI
+            runApp();
         }
         super.onStart();
     }
@@ -140,16 +124,22 @@ public class LoginActivity extends AppCompatActivity {
     };
 
     //POČAKAJ DA SE TAM ID DOBI IN ZAŽENI INTENT
-    void runApp(final Intent intent){
-        final String TAG = "Fetching user id...";
+    void runApp(){
+        final Intent createAccAct = new Intent(this, CreateAccountActivity.class);
+        final Intent mainAct = new Intent(this, MainActivity.class);
         final String[] userId = new String[1];
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
                 userId[0] = myAppClass.getUserID();
-                Log.d(TAG, userId[0]);
-                intent.putExtra("UID", userId[0]);
-                startActivity(intent);
+                if(!myAppClass.hasAcc){
+                    createAccAct.putExtra("UID", userId[0]);
+                    startActivity(createAccAct);
+                }
+                else{
+                    mainAct.putExtra("UID", userId[0]);
+                    startActivity(mainAct);
+                }
             }
         }, 2000);
     }

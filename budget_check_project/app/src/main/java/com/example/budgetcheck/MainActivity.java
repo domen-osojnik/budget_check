@@ -5,6 +5,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -24,18 +25,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        View contextView = findViewById(R.id.tabs);
-
         tabLayout=(TabLayout)findViewById(R.id.tabs);
         viewPager=(ViewPager)findViewById(R.id.viewPager);
 
         Intent intent = getIntent();
         this.value = intent.getStringExtra("ACC");
-        Snackbar.make(contextView, "Račun  "+this.value+" ustvarjen!", Snackbar.LENGTH_LONG)
+        if(TextUtils.isEmpty(this.value)) Snackbar.make(tabLayout, "Račun že imaš.", Snackbar.LENGTH_LONG)
+                .show();
+            else Snackbar.make(tabLayout, "Račun  "+ this.value +" ustvarjen!", Snackbar.LENGTH_LONG)
                 .show();
 
-        intent = new Intent(this, CreateTransactionActivity.class);
-        startActivity(intent);
+
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override

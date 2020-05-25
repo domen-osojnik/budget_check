@@ -1,6 +1,7 @@
 package com.example.budgetcheck;
 
 import android.app.Application;
+import android.os.Handler;
 import android.util.Log;
 
 import com.example.budgetcheck.events.InfoEvent;
@@ -45,6 +46,7 @@ public class MyApplicationClass extends Application {
     private String idAPP;
     public Uporabnik uporabnik;
     public String userId;
+    boolean hasAcc;
 
     /**
      * Ob zagonu
@@ -129,7 +131,7 @@ public class MyApplicationClass extends Application {
     //endregion
 
     //region FIREBASE
-    boolean handleLogin(final Uporabnik uporabnik){
+    void handleLogin(final Uporabnik uporabnik){
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         final String TAG = "LOGIN_RESPONSE";
         final boolean[] toReturn = new boolean[1];
@@ -148,13 +150,13 @@ public class MyApplicationClass extends Application {
                         userId = issue.getKey();
                         if(issue.hasChild("accounts")) {
                             EventBus.getDefault().post(new InfoEvent("User account status: ", "Has accounts"));
-                            toReturn[0] = true;
+                            hasAcc = true;
                         }
 
                         else
                         {
                             EventBus.getDefault().post(new InfoEvent("User account status:", "Doesn't have accounts"));
-                            toReturn[0] = false;
+                            hasAcc = false;
                         }
                     }
                 }
@@ -163,24 +165,22 @@ public class MyApplicationClass extends Application {
                 else{
                     EventBus.getDefault().post(new InfoEvent("User account status: ", "Creating user"));
                     reference.child("users").child(UUID.randomUUID().toString()).setValue(uporabnik);
+                    hasAcc = false;
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-        return toReturn[0];
     }
 
     boolean HandleAccountCreation(String accNumber, String balance, String accType, String uId){
         final String TAG = "ACCOUNT_RESPONSE";
-        Racun novRacun = new Racun(new VrstaRacuna(accType), accNumber, new BigDecimal(balance), new ArrayList<Transakcija>());
+        Racun novRacun = new Racun(new VrstaRacuna(accType), accNumber, new Double(balance), new ArrayList<Transakcija>());
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-        reference.child("Users").child(uId).child("accounts").child(UUID.randomUUID().toString()).setValue(novRacun);
-
+        reference.child("users").child(uId).child("accounts").child(UUID.randomUUID().toString()).setValue(novRacun);
         return true;
     }
 
