@@ -9,7 +9,7 @@ public class Racun {
      */
     private VrstaRacuna tipRacuna;
     private String stRacuna;
-    private BigDecimal stanje;
+    private Double stanje;
     private List<Transakcija> promet;
 
     /**
@@ -19,7 +19,7 @@ public class Racun {
      * @param stanje
      * @param promet
      */
-    public Racun(VrstaRacuna tipRacuna, String stRacuna, BigDecimal stanje, List<Transakcija> promet) {
+    public Racun(VrstaRacuna tipRacuna, String stRacuna, Double stanje, List<Transakcija> promet) {
         this.tipRacuna = tipRacuna;
         this.stRacuna = stRacuna;
         this.stanje = stanje;
@@ -46,11 +46,11 @@ public class Racun {
         this.stRacuna = stRacuna;
     }
 
-    public BigDecimal getStanje() {
+    public Double getStanje() {
         return stanje;
     }
 
-    public void setStanje(BigDecimal stanje) {
+    public void setStanje(Double stanje) {
         this.stanje = stanje;
     }
 

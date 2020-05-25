@@ -11,7 +11,7 @@ public class Transakcija {
      */
     private Lokacija lokacija;
     private Date datum;
-    private BigDecimal znesek;
+    private Double znesek;
     private Boolean zapravljeno; //Če zapravi je 1, drugače 0
 
     /**
@@ -21,7 +21,7 @@ public class Transakcija {
      * @param znesek
      * @param zapravljeno
      */
-    public Transakcija(Lokacija lokacija, Date datum, BigDecimal znesek, Boolean zapravljeno) {
+    public Transakcija(Lokacija lokacija, Date datum, Double znesek, Boolean zapravljeno) {
         this.lokacija = lokacija;
         this.datum = datum;
         this.znesek = znesek;
@@ -48,11 +48,11 @@ public class Transakcija {
         this.datum = datum;
     }
 
-    public BigDecimal getZnesek() {
+    public Double getZnesek() {
         return znesek;
     }
 
-    public void setZnesek(BigDecimal znesek) {
+    public void setZnesek(Double znesek) {
         this.znesek = znesek;
     }
 
