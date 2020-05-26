@@ -10,7 +10,7 @@ public class Transakcija {
      * Spremenljivke
      */
     private Lokacija lokacija;
-    private Date datum;
+    private String datum;
     private Double znesek;
     private Boolean zapravljeno; //Če zapravi je 1, drugače 0
 
@@ -21,7 +21,7 @@ public class Transakcija {
      * @param znesek
      * @param zapravljeno
      */
-    public Transakcija(Lokacija lokacija, Date datum, Double znesek, Boolean zapravljeno) {
+    public Transakcija(Lokacija lokacija, String datum, Double znesek, Boolean zapravljeno) {
         this.lokacija = lokacija;
         this.datum = datum;
         this.znesek = znesek;
@@ -40,11 +40,11 @@ public class Transakcija {
         this.lokacija = lokacija;
     }
 
-    public Date getDatum() {
+    public String getDatum() {
         return datum;
     }
 
-    public void setDatum(Date datum) {
+    public void setDatum(String datum) {
         this.datum = datum;
     }
 
@@ -73,7 +73,6 @@ public class Transakcija {
                 "\nPodatki transakcije " +
                 "\nLokacija= " + lokacija +
                 "\nDatum= " + datum +
-                "\nZnesek= " + znesek +
-                "\nzapravljeno=" + zapravljeno;
+                "\nZnesek= " + znesek;
     }
 }

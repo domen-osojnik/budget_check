@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getEmail(), account.getGivenName(), account.getFamilyName(), new ArrayList<Racun>());
+            myAppClass.handleLogin(prijavljenUporabnik);
             //ZAŽENI
             runApp();
 
@@ -98,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
         EventBus.getDefault().register(this);
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         final String[] userId = {""};
+
         if(account != null) {
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getEmail(), account.getGivenName(), account.getFamilyName(),  new ArrayList<Racun>());

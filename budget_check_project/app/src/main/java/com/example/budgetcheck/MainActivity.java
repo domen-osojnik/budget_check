@@ -21,6 +21,7 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class MainActivity extends AppCompatActivity {
     String value;
+    String uID;
     TabLayout tabLayout;
     ViewPager viewPager;
     TabItem mainTab;
@@ -32,10 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myApplicationClass = new MyApplicationClass();
-
-
-
+        myApplicationClass = (MyApplicationClass) getApplication();
         tabLayout=(TabLayout)findViewById(R.id.tabs);
         viewPager=(ViewPager)findViewById(R.id.viewPager);
         mainTab = (TabItem)findViewById(R.id.homeTab);
@@ -64,9 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         this.value = intent.getStringExtra("ACC");
+        this.uID = intent.getStringExtra("UID");
         if(TextUtils.isEmpty(this.value)) Snackbar.make(tabLayout, "Račun že imaš.", Snackbar.LENGTH_LONG)
                 .show();
         else Snackbar.make(tabLayout, "Račun  "+ this.value +" ustvarjen!", Snackbar.LENGTH_LONG)
                 .show();
+    }
+
+    public String getMyId() {
+        return this.uID;
     }
 }

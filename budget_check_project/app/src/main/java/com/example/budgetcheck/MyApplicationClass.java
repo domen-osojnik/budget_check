@@ -25,8 +25,10 @@ import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -46,7 +48,7 @@ public class MyApplicationClass extends Application {
     private String idAPP;
 
     private Uporabnik uporabnik;
-    private String userId;
+    private String userId="";
     boolean hasAcc;
 
     /**
@@ -140,6 +142,7 @@ public class MyApplicationClass extends Application {
                     EventBus.getDefault().post(new InfoEvent("User account status: ", "User exists"));
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                         userId = issue.getKey();
+
                         if(issue.hasChild("accounts")) {
                             EventBus.getDefault().post(new InfoEvent("User account status: ", "Has accounts"));
                             hasAcc = true;
@@ -154,7 +157,8 @@ public class MyApplicationClass extends Application {
                 //INSERT USER INTO DATABASE
                 else{
                     EventBus.getDefault().post(new InfoEvent("User account status: ", "Creating user"));
-                    reference.child("users").child(UUID.randomUUID().toString()).setValue(uporabnik);
+                    userId = UUID.randomUUID().toString();
+                    reference.child("users").child(userId).setValue(uporabnik);
                     hasAcc = false;
                 }
             }
@@ -165,7 +169,7 @@ public class MyApplicationClass extends Application {
         });
     }
 
-    boolean HandleAccountCreation(String accNumber, String balance, String accType, String uId){
+    public boolean HandleAccountCreation(String accNumber, String balance, String accType, String uId){
         final String TAG = "ACCOUNT_RESPONSE";
         Racun novRacun = new Racun(new VrstaRacuna(accType), accNumber, new Double(balance), new ArrayList<Transakcija>());
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -174,13 +178,20 @@ public class MyApplicationClass extends Application {
         return true;
     }
 
-    boolean HandleTranscationCreation(String location, Double amount, Boolean spent, String accId, String uId){
+    public boolean HandleTranscationCreation(String location, Double amount, Boolean spent, String uId, String accId, double accBalance){
         final String TAG = "TRANSACTION_CREATION";
-        Date newDate = new Date();
-        Transakcija newTransaction = new Transakcija(new Lokacija(location), newDate, amount, spent);
+        SimpleDateFormat simpleDate =  new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        Transakcija newTransaction = new Transakcija(new Lokacija(location), simpleDate.format(date), amount, spent);
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-        reference.child("users").child(uId).child("accounts").child(UUID.randomUUID().toString()).child("transactions").child(UUID.randomUUID().toString()).setValue(newTransaction);
+        //NASTAVI STANJE NA RAČUNU
+        HashMap<String,Double> map = new HashMap<>();
+        if(spent)accBalance+=amount;
+        else accBalance-=amount;
+        map.put("stanje", accBalance);
+        reference.child("users").child(uId).child("accounts").child(accId).setValue(map);
+        reference.child("users").child(uId).child("accounts").child(accId).child("transactions").child(UUID.randomUUID().toString()).setValue(newTransaction);
         return true;
     }
 
@@ -190,7 +201,7 @@ public class MyApplicationClass extends Application {
     //endregion
 
     //region WRITE TO FILE
-    private void createAccountTypes(){
+    public void createAccountTypes(){
         seznamVrstRačunov = new SeznamVrstRacuna();
         VrstaRacuna novaVrsta = new VrstaRacuna("Osebni");
         seznamVrstRačunov.dodajRacun(novaVrsta);

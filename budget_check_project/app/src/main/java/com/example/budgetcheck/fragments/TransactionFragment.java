@@ -20,19 +20,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 import com.example.budgetcheck.MainActivity;
 import com.example.budgetcheck.MyApplicationClass;
 import com.example.budgetcheck.R;
+import com.example.budgetcheck.events.InfoEvent;
 import com.example.datastructurelib.Uporabnik;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,37 +59,60 @@ public class TransactionFragment extends Fragment {
     TextInputEditText locationName;
     TextInputEditText amount;
     Button addButton;
+    CheckBox spent;
     private FusedLocationProviderClient fusedLocationClient;
-    private String uID="";
+    private String uID= "";
+    private String accID = "";
+    private Double accBalance = 0.00;
     private MyApplicationClass myApplicationClass;
+
+    MainActivity activity;
 
     public TransactionFragment() {
         // Required empty public constructor
     }
 
-    public TransactionFragment(String uID) {
-        this.uID = uID;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        activity = (MainActivity) getActivity();
+        this.uID = activity.getMyId();
+
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        final String TAG = "GET_ACC";
+
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+        databaseRef.child("users").child(this.uID).child("accounts").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot==null)return;
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    accID = postSnapshot.getKey();
+                    accBalance = new Double (postSnapshot.child("stanje").getValue().toString());
+                    Log.d("Pridobljeno stanje: ", accBalance.toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Error
+            }
+        });
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_transaction, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.d("Ustvarjen fragment", this.uID);
         this.locationName = (TextInputEditText)getView().findViewById(R.id.location_text);
         this.amount = (TextInputEditText)getView().findViewById(R.id.amount_text);
         this.addButton = (Button)getView().findViewById(R.id.add_button);
+        this.spent = (CheckBox) getView().findViewById(R.id.earned);
 
-        this.myApplicationClass = new MyApplicationClass();
+        this.myApplicationClass = (MyApplicationClass) getActivity().getApplication();
 
         Uporabnik user = myApplicationClass.getUporabnik();
-
-        Log.d("test", user.toString());
 
         createNotificationChannel();
 
@@ -108,6 +144,8 @@ public class TransactionFragment extends Fragment {
         this.addButton.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v){
+                Log.d("ACC_ID", accID);
+                myApplicationClass.HandleTranscationCreation(locationName.getText().toString(), new Double(amount.getText().toString()), new Boolean(spent.isChecked()), uID, accID, accBalance);
                 showNotification();
             }
         });
@@ -117,6 +155,7 @@ public class TransactionFragment extends Fragment {
         // Create an explicit intent for an Activity in your app
         // Za odpiranje domače strani po pritisku na notification
         Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.putExtra("UID", this.uID);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getActivity());

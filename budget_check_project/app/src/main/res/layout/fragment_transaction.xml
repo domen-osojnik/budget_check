@@ -59,22 +59,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
-        android:id="@+id/spent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Zaslužil"
-        android:layout_marginLeft="20px"
-        app:layout_constraintTop_toBottomOf="@id/amount"
-        app:layout_constraintLeft_toLeftOf="parent"/>
-
-    <CheckBox
         android:id="@+id/earned"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Zapravil"
+        android:text="Zaslužil"
         android:layout_marginLeft="30px"
-        app:layout_constraintLeft_toRightOf="@id/spent"
-        app:layout_constraintBaseline_toBaselineOf="@id/spent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/amount"/>
 
 
     <Button
@@ -85,6 +76,7 @@
         android:layout_marginTop="20px"
         app:icon="@drawable/ic_plus22"
         app:layout_constraintTop_toBottomOf="@id/earned"
-        app:layout_constraintLeft_toLeftOf="parent" app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
