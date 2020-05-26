@@ -53,6 +53,8 @@ public class CreateAccountActivity extends AppCompatActivity {
         Log.d("Pridobljen ID: " , this.UID);
 
         mApplication =(MyApplicationClass) getApplication();
+
+        mApplication.createAccountTypes();
         this.addButton=(Button) findViewById(R.id.add_button);
         this.accountNumber = (TextInputEditText)findViewById(R.id.acc_number_text);
         this.balance = (TextInputEditText)findViewById(R.id.balance);
@@ -82,6 +84,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         if(this.mApplication.HandleAccountCreation(accNumber, balance, accType, this.UID)){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("ACC", accNumber);
+        intent.putExtra("UID", UID);
         startActivity(intent);
        }
 }

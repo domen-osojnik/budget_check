@@ -1,6 +1,7 @@
 package com.example.budgetcheck;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -9,35 +10,38 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.example.budgetcheck.ui.PageAdapter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class MainActivity extends AppCompatActivity {
     String value;
+    String uID;
     TabLayout tabLayout;
     ViewPager viewPager;
+    TabItem mainTab;
+    TabItem transactionTab;
     MyApplicationClass myApplicationClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        myApplicationClass = (MyApplicationClass) getApplication();
         tabLayout=(TabLayout)findViewById(R.id.tabs);
         viewPager=(ViewPager)findViewById(R.id.viewPager);
-        myApplicationClass = new MyApplicationClass();
+        mainTab = (TabItem)findViewById(R.id.homeTab);
+        transactionTab = (TabItem)findViewById(R.id.transactionTab);
 
-        Intent intent = getIntent();
-        this.value = intent.getStringExtra("ACC");
-        if(TextUtils.isEmpty(this.value)) Snackbar.make(tabLayout, "Račun že imaš.", Snackbar.LENGTH_LONG)
-                .show();
-            else Snackbar.make(tabLayout, "Račun  "+ this.value +" ustvarjen!", Snackbar.LENGTH_LONG)
-                .show();
+        PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
 
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        viewPager.setAdapter(pageAdapter);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
+
             }
 
             @Override
@@ -54,5 +59,17 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        Intent intent = getIntent();
+        this.value = intent.getStringExtra("ACC");
+        this.uID = intent.getStringExtra("UID");
+        if(TextUtils.isEmpty(this.value)) Snackbar.make(tabLayout, "Račun že imaš.", Snackbar.LENGTH_LONG)
+                .show();
+        else Snackbar.make(tabLayout, "Račun  "+ this.value +" ustvarjen!", Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    public String getMyId() {
+        return this.uID;
     }
 }
