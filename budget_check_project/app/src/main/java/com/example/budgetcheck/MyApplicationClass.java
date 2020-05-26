@@ -39,15 +39,14 @@ public class MyApplicationClass extends Application {
      * Spremenljivke
      */
     public SeznamVrstRacuna seznamVrstRačunov;
-    private DatabaseReference mDatabase;
-    public boolean obstaja = false;
-    public static final String TAG = MyApplicationClass.class.getName();
-    public static final String MY_FILE_NAME = "DATA.json";
+    private static final String TAG = MyApplicationClass.class.getName();
+    private static final String MY_FILE_NAME = "DATA.json";
     static private Gson gson;
     static private File file;
     private String idAPP;
-    public Uporabnik uporabnik;
-    public String userId;
+
+    private Uporabnik uporabnik;
+    private String userId;
     boolean hasAcc;
 
     /**
@@ -56,22 +55,12 @@ public class MyApplicationClass extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         this.init();
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
-    }
-
-
-    public void setIdApp(String newId){
-        this.idAPP = newId;
-    }
-
-    public String getIdApp(){
-        return this.idAPP;
     }
 
     //region GSON
@@ -97,7 +86,7 @@ public class MyApplicationClass extends Application {
     public void saveToFile() {
         try {
             FileUtils.writeStringToFile(this.getFile(), getGson().toJson(this.seznamVrstRačunov));
-            EventBus.getDefault().post(new InfoEvent("File write", "Written to file"));
+            EventBus.getDefault().post(new InfoEvent("File write", "Written to file."));
         } catch (IOException e) {
             Log.d(TAG, "Can't save "+file.getPath());
         }
@@ -106,7 +95,8 @@ public class MyApplicationClass extends Application {
     private boolean readFromFile() {
         if (!getFile().exists())  return false;
         try {
-            seznamVrstRačunov = getGson().fromJson(FileUtils.readFileToString(getFile()), SeznamVrstRacuna.class);
+            this.uporabnik = getGson().fromJson(FileUtils.readFileToString(getFile()), Uporabnik.class);
+            this.seznamVrstRačunov = getGson().fromJson(FileUtils.readFileToString(getFile()), SeznamVrstRacuna.class);
         } catch (IOException e) {
             Log.d("READ", "Problem in read function!");
             return false;
@@ -118,6 +108,7 @@ public class MyApplicationClass extends Application {
         if (!readFromFile()) {
             return false;
         }
+
         if(seznamVrstRačunov == null){
             createAccountTypes();
             saveToFile();
@@ -136,8 +127,6 @@ public class MyApplicationClass extends Application {
     void handleLogin(final Uporabnik uporabnik){
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         final String TAG = "LOGIN_RESPONSE";
-        final boolean[] toReturn = new boolean[1];
-        final String[] userIdArr = new String[1];
         this.uporabnik = uporabnik;
 
         Query query = reference.child("users").orderByChild("email").equalTo(uporabnik.getEmail());
@@ -147,6 +136,7 @@ public class MyApplicationClass extends Application {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    createUser(uporabnik);
                     EventBus.getDefault().post(new InfoEvent("User account status: ", "User exists"));
                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                         userId = issue.getKey();
@@ -154,7 +144,6 @@ public class MyApplicationClass extends Application {
                             EventBus.getDefault().post(new InfoEvent("User account status: ", "Has accounts"));
                             hasAcc = true;
                         }
-
                         else
                         {
                             EventBus.getDefault().post(new InfoEvent("User account status:", "Doesn't have accounts"));
@@ -162,7 +151,6 @@ public class MyApplicationClass extends Application {
                         }
                     }
                 }
-
                 //INSERT USER INTO DATABASE
                 else{
                     EventBus.getDefault().post(new InfoEvent("User account status: ", "Creating user"));
@@ -208,6 +196,39 @@ public class MyApplicationClass extends Application {
         seznamVrstRačunov.dodajRacun(novaVrsta);
         novaVrsta = new VrstaRacuna("Varčevalni");
         seznamVrstRačunov.dodajRacun(novaVrsta);
+    }
+
+    private void createUser(Uporabnik uporabnik){
+        try {
+            FileUtils.writeStringToFile(this.getFile(), getGson().toJson(uporabnik));
+            EventBus.getDefault().post(new InfoEvent("File write", "Written user to file"));
+        } catch (IOException e) {
+            Log.d(TAG, "Can't save "+file.getPath());
+        }
+    }
+    //endregion
+
+    //region GETTERS SETTERS
+    public void setIdApp(String newId){
+        this.idAPP = newId;
+    }
+
+    public String getIdApp(){
+        return this.idAPP;
+    }
+
+
+    public Uporabnik getUporabnik() {
+        try {
+            this.uporabnik = getGson().fromJson(FileUtils.readFileToString(getFile()), Uporabnik.class);
+        } catch (IOException e) {
+            Log.d("READ", "Problem in read function!");
+        }
+        return this.uporabnik;
+    }
+
+    public void setUporabnik(Uporabnik uporabnik) {
+        this.uporabnik = uporabnik;
     }
     //endregion
 }

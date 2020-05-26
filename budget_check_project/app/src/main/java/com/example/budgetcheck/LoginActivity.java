@@ -79,12 +79,8 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-            Log.d("Status", "Uspešno");
-            final String[] userId = {""};
             Uporabnik prijavljenUporabnik = new Uporabnik(account.getDisplayName(),
                     account.getEmail(), account.getGivenName(), account.getFamilyName(), new ArrayList<Racun>());
-            //TODO: preveri ali ima uporabnik račune, če nima, pošlji na activity za ustvarjanje računa, drugače na main activity (main menu)
             //ZAŽENI
             runApp();
 

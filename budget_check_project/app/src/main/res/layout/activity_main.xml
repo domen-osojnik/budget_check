@@ -13,22 +13,22 @@
         tools:ignore="MissingConstraints">
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/homeTab"
             android:icon="@drawable/ic_home_solid"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"/>
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/transactionTab"
             android:icon="@drawable/ic_plus22"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"/>
-        <com.google.android.material.tabs.TabItem
-            android:icon="@drawable/ic_cogs_solid"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"/>
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabs" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

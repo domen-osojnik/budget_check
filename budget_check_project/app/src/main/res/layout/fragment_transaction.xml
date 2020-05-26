@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20px"
-    tools:context=".CreateTransactionActivity">
+    tools:context=".fragments.TransactionFragment">
 
     <TextView
         android:id="@+id/textView"
