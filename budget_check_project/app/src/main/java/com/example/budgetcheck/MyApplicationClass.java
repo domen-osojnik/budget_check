@@ -171,7 +171,7 @@ public class MyApplicationClass extends Application {
 
     public boolean HandleAccountCreation(String accNumber, String balance, String accType, String uId){
         final String TAG = "ACCOUNT_RESPONSE";
-        Racun novRacun = new Racun(new VrstaRacuna(accType), accNumber, new Double(balance), new ArrayList<Transakcija>());
+        Racun novRacun = new Racun(new VrstaRacuna(accType), "SI56" + accNumber, new Double(balance), new ArrayList<Transakcija>());
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         reference.child("users").child(uId).child("accounts").child(UUID.randomUUID().toString()).setValue(novRacun);
@@ -182,16 +182,23 @@ public class MyApplicationClass extends Application {
         final String TAG = "TRANSACTION_CREATION";
         SimpleDateFormat simpleDate =  new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
-        Transakcija newTransaction = new Transakcija(new Lokacija(location), simpleDate.format(date), amount, spent);
+        Transakcija newTransaction = new Transakcija(new Lokacija(location), simpleDate.format(date), amount, !spent);
         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         //NASTAVI STANJE NA RAČUNU
         HashMap<String,Double> map = new HashMap<>();
         if(spent)accBalance+=amount;
         else accBalance-=amount;
-        map.put("stanje", accBalance);
-        reference.child("users").child(uId).child("accounts").child(accId).setValue(map);
-        reference.child("users").child(uId).child("accounts").child(accId).child("transactions").child(UUID.randomUUID().toString()).setValue(newTransaction);
+        //Posodobi stanje
+        reference.child("users").child(uId).child("accounts").child(accId).child("stanje").setValue(accBalance);
+        //reference.child("users").child(uId).child("accounts").child(accId).setValue(map);
+
+        //Ustvari novo transakcijo
+        DatabaseReference transactionsRef = reference.child("users").child(uId).child("accounts").child(accId).child("transactions");
+        DatabaseReference newTranscationRef = transactionsRef.push();
+        newTranscationRef.setValue(newTransaction);
+
+        //reference.child("users").child(uId).child("accounts").child(accId).child("transactions").child(UUID.randomUUID().toString()).push(newTransaction);
         return true;
     }
 
